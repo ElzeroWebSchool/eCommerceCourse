@@ -363,4 +363,28 @@ h1 {
 	margin-bottom: 30px;
 }
 
+.categories .child-head {
+    margin: 15px 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #22ab79;
+}
+
+.categories .child-cats {
+	margin: 0;
+}
+
+.categories .child-cats li {
+	margin-left: 15px;
+}
+
+.categories .child-cats li:before {
+	content: "- ";
+}
+
+.categories .show-delete {
+	color: #F00;
+	display: none;
+}
+
 /* End Category Page */

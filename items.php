@@ -67,6 +67,20 @@
 					<i class="fa fa-user fa-fw"></i>
 					<span>Added By</span> : <a href="#"><?php echo $item['Username'] ?></a>
 				</li>
+				<li class="tags-items">
+					<i class="fa fa-user fa-fw"></i>
+					<span>Tags</span> : 
+					<?php 
+						$allTags = explode(",", $item['tags']);
+						foreach ($allTags as $tag) {
+							$tag = str_replace(' ', '', $tag);
+							$lowertag = strtolower($tag);
+							if (! empty($tag)) {
+								echo "<a href='tags.php?name={$lowertag}'>" . $tag . '</a>';
+							}
+						}
+					?>
+				</li>
 			</ul>
 		</div>
 	</div>

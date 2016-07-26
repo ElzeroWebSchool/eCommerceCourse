@@ -30,7 +30,7 @@
 
 			}
 
-			$stmt2 = $con->prepare("SELECT * FROM categories ORDER BY Ordering $sort");
+			$stmt2 = $con->prepare("SELECT * FROM categories WHERE parent = 0 ORDER BY Ordering $sort");
 
 			$stmt2->execute();
 
@@ -69,6 +69,21 @@
 										if($cat['Allow_Comment'] == 1) { echo '<span class="commenting cat-span"><i class="fa fa-close"></i> Comment Disabled</span>'; }
 										if($cat['Allow_Ads'] == 1) { echo '<span class="advertises cat-span"><i class="fa fa-close"></i> Ads Disabled</span>'; }  
 									echo "</div>";
+
+									// Get Child Categories
+							      	$childCats = getAllFrom("*", "categories", "where parent = {$cat['ID']}", "", "ID", "ASC");
+							      	if (! empty($childCats)) {
+								      	echo "<h4 class='child-head'>Child Categories</h4>";
+								      	echo "<ul class='list-unstyled child-cats'>";
+										foreach ($childCats as $c) {
+											echo "<li class='child-link'>
+												<a href='categories.php?do=Edit&catid=" . $c['ID'] . "'>" . $c['Name'] . "</a>
+												<a href='categories.php?do=Delete&catid=" . $c['ID'] . "' class='show-delete confirm'> Delete</a>
+											</li>";
+										}
+										echo "</ul>";
+									}
+
 								echo "</div>";
 								echo "<hr>";
 							}
@@ -120,6 +135,22 @@
 						</div>
 					</div>
 					<!-- End Ordering Field -->
+					<!-- Start Category Type -->
+					<div class="form-group form-group-lg">
+						<label class="col-sm-2 control-label">Parent?</label>
+						<div class="col-sm-10 col-md-6">
+							<select name="parent">
+								<option value="0">None</option>
+								<?php 
+									$allCats = getAllFrom("*", "categories", "where parent = 0", "", "ID", "ASC");
+									foreach($allCats as $cat) {
+										echo "<option value='" . $cat['ID'] . "'>" . $cat['Name'] . "</option>";
+									}
+								?>
+							</select>
+						</div>
+					</div>
+					<!-- End Category Type -->
 					<!-- Start Visibility Field -->
 					<div class="form-group form-group-lg">
 						<label class="col-sm-2 control-label">Visible</label>
@@ -188,6 +219,7 @@
 
 				$name 		= $_POST['name'];
 				$desc 		= $_POST['description'];
+				$parent 	= $_POST['parent'];
 				$order 		= $_POST['ordering'];
 				$visible 	= $_POST['visibility'];
 				$comment 	= $_POST['commenting'];
@@ -209,13 +241,14 @@
 
 					$stmt = $con->prepare("INSERT INTO 
 
-						categories(Name, Description, Ordering, Visibility, Allow_Comment, Allow_Ads)
+						categories(Name, Description, parent, Ordering, Visibility, Allow_Comment, Allow_Ads)
 
-					VALUES(:zname, :zdesc, :zorder, :zvisible, :zcomment, :zads)");
+					VALUES(:zname, :zdesc, :zparent, :zorder, :zvisible, :zcomment, :zads)");
 
 					$stmt->execute(array(
 						'zname' 	=> $name,
 						'zdesc' 	=> $desc,
+						'zparent' 	=> $parent,
 						'zorder' 	=> $order,
 						'zvisible' 	=> $visible,
 						'zcomment' 	=> $comment,
@@ -298,6 +331,24 @@
 							</div>
 						</div>
 						<!-- End Ordering Field -->
+						<!-- Start Category Type -->
+						<div class="form-group form-group-lg">
+							<label class="col-sm-2 control-label">Parent?</label>
+							<div class="col-sm-10 col-md-6">
+								<select name="parent">
+									<option value="0">None</option>
+									<?php 
+										$allCats = getAllFrom("*", "categories", "where parent = 0", "", "ID", "ASC");
+										foreach($allCats as $c) {
+											echo "<option value='" . $c['ID'] . "'";
+											if ($cat['parent'] == $c['ID']) { echo ' selected'; }
+											echo ">" . $c['Name'] . "</option>";
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<!-- End Category Type -->
 						<!-- Start Visibility Field -->
 						<div class="form-group form-group-lg">
 							<label class="col-sm-2 control-label">Visible</label>
@@ -382,6 +433,7 @@
 				$name 		= $_POST['name'];
 				$desc 		= $_POST['description'];
 				$order 		= $_POST['ordering'];
+				$parent 	= $_POST['parent'];
 
 				$visible 	= $_POST['visibility'];
 				$comment 	= $_POST['commenting'];
@@ -395,13 +447,14 @@
 											Name = ?, 
 											Description = ?, 
 											Ordering = ?, 
+											parent = ?,
 											Visibility = ?,
 											Allow_Comment = ?,
 											Allow_Ads = ? 
 										WHERE 
 											ID = ?");
 
-				$stmt->execute(array($name, $desc, $order, $visible, $comment, $ads, $id));
+				$stmt->execute(array($name, $desc, $order, $parent, $visible, $comment, $ads, $id));
 
 				// Echo Success Message
 

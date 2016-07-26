@@ -186,10 +186,8 @@
 							<select name="member">
 								<option value="0">...</option>
 								<?php
-									$stmt = $con->prepare("SELECT * FROM users");
-									$stmt->execute();
-									$users = $stmt->fetchAll();
-									foreach ($users as $user) {
+									$allMembers = getAllFrom("*", "users", "", "", "UserID");
+									foreach ($allMembers as $user) {
 										echo "<option value='" . $user['UserID'] . "'>" . $user['Username'] . "</option>";
 									}
 								?>
@@ -204,17 +202,31 @@
 							<select name="category">
 								<option value="0">...</option>
 								<?php
-									$stmt2 = $con->prepare("SELECT * FROM categories");
-									$stmt2->execute();
-									$cats = $stmt2->fetchAll();
-									foreach ($cats as $cat) {
+									$allCats = getAllFrom("*", "categories", "where parent = 0", "", "ID");
+									foreach ($allCats as $cat) {
 										echo "<option value='" . $cat['ID'] . "'>" . $cat['Name'] . "</option>";
+										$childCats = getAllFrom("*", "categories", "where parent = {$cat['ID']}", "", "ID");
+										foreach ($childCats as $child) {
+											echo "<option value='" . $child['ID'] . "'>--- " . $child['Name'] . "</option>";
+										}
 									}
 								?>
 							</select>
 						</div>
 					</div>
 					<!-- End Categories Field -->
+					<!-- Start Tags Field -->
+					<div class="form-group form-group-lg">
+						<label class="col-sm-2 control-label">Tags</label>
+						<div class="col-sm-10 col-md-6">
+							<input 
+								type="text" 
+								name="tags" 
+								class="form-control" 
+								placeholder="Separate Tags With Comma (,)" />
+						</div>
+					</div>
+					<!-- End Tags Field -->
 					<!-- Start Submit Field -->
 					<div class="form-group form-group-lg">
 						<div class="col-sm-offset-2 col-sm-10">
@@ -243,6 +255,7 @@
 				$status 	= $_POST['status'];
 				$member 	= $_POST['member'];
 				$cat 		= $_POST['category'];
+				$tags 		= $_POST['tags'];
 
 				// Validate The Form
 
@@ -290,9 +303,9 @@
 
 					$stmt = $con->prepare("INSERT INTO 
 
-						items(Name, Description, Price, Country_Made, Status, Add_Date, Cat_ID, Member_ID)
+						items(Name, Description, Price, Country_Made, Status, Add_Date, Cat_ID, Member_ID, tags)
 
-						VALUES(:zname, :zdesc, :zprice, :zcountry, :zstatus, now(), :zcat, :zmember)");
+						VALUES(:zname, :zdesc, :zprice, :zcountry, :zstatus, now(), :zcat, :zmember, :ztags)");
 
 					$stmt->execute(array(
 
@@ -302,7 +315,8 @@
 						'zcountry' 	=> $country,
 						'zstatus' 	=> $status,
 						'zcat'		=> $cat,
-						'zmember'	=> $member
+						'zmember'	=> $member,
+						'ztags'		=> $tags
 
 					));
 
@@ -433,10 +447,8 @@
 							<div class="col-sm-10 col-md-6">
 								<select name="member">
 									<?php
-										$stmt = $con->prepare("SELECT * FROM users");
-										$stmt->execute();
-										$users = $stmt->fetchAll();
-										foreach ($users as $user) {
+										$allMembers = getAllFrom("*", "users", "", "", "UserID");
+										foreach ($allMembers as $user) {
 											echo "<option value='" . $user['UserID'] . "'"; 
 											if ($item['Member_ID'] == $user['UserID']) { echo 'selected'; } 
 											echo ">" . $user['Username'] . "</option>";
@@ -452,19 +464,36 @@
 							<div class="col-sm-10 col-md-6">
 								<select name="category">
 									<?php
-										$stmt2 = $con->prepare("SELECT * FROM categories");
-										$stmt2->execute();
-										$cats = $stmt2->fetchAll();
-										foreach ($cats as $cat) {
+										$allCats = getAllFrom("*", "categories", "where parent = 0", "", "ID");
+										foreach ($allCats as $cat) {
 											echo "<option value='" . $cat['ID'] . "'";
-											if ($item['Cat_ID'] == $cat['ID']) { echo 'selected'; }
+											if ($item['Cat_ID'] == $cat['ID']) { echo ' selected'; }
 											echo ">" . $cat['Name'] . "</option>";
+											$childCats = getAllFrom("*", "categories", "where parent = {$cat['ID']}", "", "ID");
+											foreach ($childCats as $child) {
+												echo "<option value='" . $child['ID'] . "'";
+												if ($item['Cat_ID'] == $child['ID']) { echo ' selected'; }
+												echo ">--- " . $child['Name'] . "</option>";
+											}
 										}
 									?>
 								</select>
 							</div>
 						</div>
 						<!-- End Categories Field -->
+						<!-- Start Tags Field -->
+						<div class="form-group form-group-lg">
+							<label class="col-sm-2 control-label">Tags</label>
+							<div class="col-sm-10 col-md-6">
+								<input 
+									type="text" 
+									name="tags" 
+									class="form-control" 
+									placeholder="Separate Tags With Comma (,)" 
+									value="<?php echo $item['tags'] ?>" />
+							</div>
+						</div>
+						<!-- End Tags Field -->
 						<!-- Start Submit Field -->
 						<div class="form-group form-group-lg">
 							<div class="col-sm-offset-2 col-sm-10">
@@ -566,6 +595,7 @@
 				$status 	= $_POST['status'];
 				$cat 		= $_POST['category'];
 				$member 	= $_POST['member'];
+				$tags 		= $_POST['tags'];
 
 				// Validate The Form
 
@@ -620,11 +650,12 @@
 												Country_Made = ?,
 												Status = ?,
 												Cat_ID = ?,
-												Member_ID = ?
+												Member_ID = ?,
+												tags = ?
 											WHERE 
 												Item_ID = ?");
 
-					$stmt->execute(array($name, $desc, $price, $country, $status, $cat, $member, $id));
+					$stmt->execute(array($name, $desc, $price, $country, $status, $cat, $member, $tags, $id));
 
 					// Echo Success Message
 

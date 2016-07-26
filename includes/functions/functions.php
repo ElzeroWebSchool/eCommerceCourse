@@ -1,17 +1,15 @@
 <?php
 
 	/*
-	** Get All Function v1.0
+	** Get All Function v2.0
 	** Function To Get All Records From Any Database Table
 	*/
 
-	function getAllFrom($tableName, $orderBy, $where = NULL) {
+	function getAllFrom($field, $table, $where = NULL, $and = NULL, $orderfield, $ordering = "DESC") {
 
 		global $con;
 
-		$sql = $where == NULL ? '' : $where;
-
-		$getAll = $con->prepare("SELECT * FROM $tableName $sql ORDER BY $orderBy DESC");
+		$getAll = $con->prepare("SELECT $field FROM $table $where $and ORDER BY $orderfield $ordering");
 
 		$getAll->execute();
 
@@ -20,48 +18,7 @@
 		return $all;
 
 	}
-
-
-	/*
-	** Get Categories Function v1.0
-	** Function To Get Categories From Database
-	*/
-
-	function getCat() {
-
-		global $con;
-
-		$getCat = $con->prepare("SELECT * FROM categories ORDER BY ID ASC");
-
-		$getCat->execute();
-
-		$cats = $getCat->fetchAll();
-
-		return $cats;
-
-	}
-
-	/*
-	** Get AD Items Function v2.0
-	** Function To Get AD Items From Database
-	*/
-
-	function getItems($where, $value, $approve = NULL) {
-
-		global $con;
-
-		$sql = $approve == NULL ? 'AND Approve = 1' : '';
-
-		$getItems = $con->prepare("SELECT * FROM items WHERE $where = ? $sql ORDER BY Item_ID DESC");
-
-		$getItems->execute(array($value));
-
-		$items = $getItems->fetchAll();
-
-		return $items;
-
-	}	
-
+	
 	/*
 	** Check If User Is Not Activated
 	** Function To Check The RegStatus Of The User

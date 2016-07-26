@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 19, 2016 at 11:31 PM
+-- Generation Time: Jul 26, 2016 at 05:09 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.5.19
 
@@ -30,22 +30,26 @@ CREATE TABLE IF NOT EXISTS `categories` (
 `ID` int(11) NOT NULL,
   `Name` varchar(255) NOT NULL,
   `Description` text NOT NULL,
+  `parent` int(11) NOT NULL,
   `Ordering` int(11) DEFAULT NULL,
   `Visibility` tinyint(4) NOT NULL DEFAULT '0',
   `Allow_Comment` tinyint(4) NOT NULL DEFAULT '0',
   `Allow_Ads` tinyint(4) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`ID`, `Name`, `Description`, `Ordering`, `Visibility`, `Allow_Comment`, `Allow_Ads`) VALUES
-(8, 'Hand Made', 'Hand Made Items', 1, 0, 0, 0),
-(9, 'Computers', 'Computers Item', 2, 0, 0, 0),
-(10, 'Cell Phones', 'Cell Phones', 3, 0, 0, 0),
-(11, 'Clothing', 'Clothing And Fashion', 4, 0, 0, 0),
-(12, 'Tools', 'Home Tools', 5, 0, 0, 0);
+INSERT INTO `categories` (`ID`, `Name`, `Description`, `parent`, `Ordering`, `Visibility`, `Allow_Comment`, `Allow_Ads`) VALUES
+(8, 'Hand Made', 'Hand Made Items', 0, 1, 1, 1, 1),
+(9, 'Computers', 'Computers Item', 0, 2, 0, 0, 0),
+(10, 'Cell Phones', 'Cell Phones', 0, 3, 0, 0, 0),
+(11, 'Clothing', 'Clothing And Fashion', 8, 4, 0, 0, 0),
+(12, 'Tools', 'Home Tools', 0, 5, 0, 0, 0),
+(14, 'Blackberry', 'Blackberry Phones', 10, 2, 0, 0, 0),
+(15, 'Hammers', 'Hammers Desc', 12, 1, 0, 0, 0),
+(17, 'Games', 'Hand Made Games ', 12, 3, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -94,28 +98,32 @@ CREATE TABLE IF NOT EXISTS `items` (
   `Rating` smallint(6) NOT NULL,
   `Approve` tinyint(4) NOT NULL DEFAULT '0',
   `Cat_ID` int(11) NOT NULL,
-  `Member_ID` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+  `Member_ID` int(11) NOT NULL,
+  `tags` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`Item_ID`, `Name`, `Description`, `Price`, `Add_Date`, `Country_Made`, `Image`, `Status`, `Rating`, `Approve`, `Cat_ID`, `Member_ID`) VALUES
-(14, 'Speaker', 'Very Good Speaker', '$10', '2016-05-09', 'China', '', '1', 0, 1, 9, 28),
-(15, 'Yeti Blue Mic', 'Very Good Microphone Very Good Microphone', '$108', '2016-05-09', 'USA', '', '1', 0, 1, 9, 28),
-(16, 'iPhone 6s', 'Apple iPhone 6s', '$300', '2016-05-09', 'USA', '', '2', 0, 1, 10, 24),
-(17, 'Magic Mouse', 'Apple Magic Mouse', '$150', '2016-05-09', 'USA', '', '1', 0, 1, 9, 24),
-(18, 'Network Cable', 'Cat 9 Network Cable', '$100', '2016-05-09', 'USA', '', '1', 0, 1, 9, 25),
-(19, 'Game', 'Test Game For Item', '120', '2016-06-17', 'USA', '', '2', 0, 1, 9, 30),
-(20, 'iPhone 6s', 'iPhone 6s Very Cool Phone', '1500', '2016-06-17', 'USA', '', '2', 0, 1, 10, 30),
-(21, 'Hammer', 'A Very Good Iron Hammer', '30', '2016-06-17', 'China', '', '3', 0, 1, 12, 30),
-(22, 'Good Box', 'Nice Hand Made Box', '40', '2016-06-17', 'Egypt', '', '1', 0, 1, 8, 30),
-(23, 'Test Item', 'This Is Test Item To Test Approve Status', '100', '2016-06-17', 'Japan', '', '3', 0, 1, 8, 30),
-(24, 'Testing Item', 'Testing Description Testing Description', '120', '2016-06-17', 'Korea', '', '3', 0, 0, 10, 30),
-(25, 'Osama', 'Osama Osama Elzero Elzero', '100', '2016-06-17', 'Egypt', '', '3', 0, 1, 10, 30),
-(26, '12121212', '33333333333', '33333', '2016-06-17', '333333', '', '2', 0, 0, 11, 30),
-(27, 'My Item', 'My New Description', '12', '2016-06-17', 'Saudi Arabia', '', '1', 0, 1, 10, 30);
+INSERT INTO `items` (`Item_ID`, `Name`, `Description`, `Price`, `Add_Date`, `Country_Made`, `Image`, `Status`, `Rating`, `Approve`, `Cat_ID`, `Member_ID`, `tags`) VALUES
+(14, 'Speaker', 'Very Good Speaker', '$10', '2016-05-09', 'China', '', '1', 0, 1, 9, 28, ''),
+(15, 'Yeti Blue Mic', 'Very Good Microphone Very Good Microphone', '$108', '2016-05-09', 'USA', '', '1', 0, 1, 9, 28, ''),
+(16, 'iPhone 6s', 'Apple iPhone 6s', '$300', '2016-05-09', 'USA', '', '2', 0, 1, 10, 24, ''),
+(17, 'Magic Mouse', 'Apple Magic Mouse', '$150', '2016-05-09', 'USA', '', '1', 0, 1, 9, 24, ''),
+(18, 'Network Cable', 'Cat 9 Network Cable', '$100', '2016-05-09', 'USA', '', '1', 0, 1, 9, 25, ''),
+(19, 'Game', 'Test Game For Item', '120', '2016-06-17', 'USA', '', '2', 0, 1, 9, 30, ''),
+(20, 'iPhone 6s', 'iPhone 6s Very Cool Phone', '1500', '2016-06-17', 'USA', '', '2', 0, 1, 10, 30, ''),
+(21, 'Hammer', 'A Very Good Iron Hammer', '30', '2016-06-17', 'China', '', '3', 0, 1, 12, 30, ''),
+(22, 'Good Box', 'Nice Hand Made Box', '40', '2016-06-17', 'Egypt', '', '1', 0, 1, 8, 30, ''),
+(23, 'Test Item', 'This Is Test Item To Test Approve Status', '100', '2016-06-17', 'Japan', '', '3', 0, 1, 8, 30, ''),
+(24, 'Testing Item', 'Testing Description Testing Description', '120', '2016-06-17', 'Korea', '', '3', 0, 0, 10, 30, ''),
+(25, 'Osama', 'Osama Osama Elzero Elzero', '100', '2016-06-17', 'Egypt', '', '3', 0, 1, 10, 30, ''),
+(26, '12121212', '33333333333', '33333', '2016-06-17', '333333', '', '2', 0, 1, 11, 30, ''),
+(27, 'My Item', 'My New Description', '12', '2016-06-17', 'Saudi Arabia', '', '1', 0, 1, 10, 30, 'Test, Discount, Elzero'),
+(28, 'Wooden Game', 'A Good Wooden game', '100', '2016-07-25', 'Egypt', '', '1', 0, 1, 8, 30, 'Elzero, Hand, Discount, Gurantee'),
+(29, 'Diablo III', 'Good Playstation 4 Game', '70', '2016-07-25', 'USA', '', '1', 0, 1, 17, 30, 'RPG, Online, Game'),
+(30, 'Ys Oath In Felghana', 'A Good Ps Game', '100', '2016-07-25', 'Japan', '', '1', 0, 1, 17, 30, 'Online, RPG, Game');
 
 -- --------------------------------------------------------
 
@@ -184,7 +192,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `comments`
 --
@@ -194,7 +202,7 @@ MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
+MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `users`
 --
