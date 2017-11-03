@@ -50,9 +50,10 @@
 			<h1 class="text-center">Manage Members</h1>
 			<div class="container">
 				<div class="table-responsive">
-					<table class="main-table text-center table table-bordered">
+					<table class="main-table manage-members text-center table table-bordered">
 						<tr>
 							<td>#ID</td>
+							<td>Avatar</td>
 							<td>Username</td>
 							<td>Email</td>
 							<td>Full Name</td>
@@ -63,6 +64,14 @@
 							foreach($rows as $row) {
 								echo "<tr>";
 									echo "<td>" . $row['UserID'] . "</td>";
+									echo "<td>";
+									if (empty($row['avatar'])) {
+										echo 'No Image';
+									} else {
+										echo "<img src='uploads/avatars/" . $row['avatar'] . "' alt='' />";
+									}
+									echo "</td>";
+
 									echo "<td>" . $row['Username'] . "</td>";
 									echo "<td>" . $row['Email'] . "</td>";
 									echo "<td>" . $row['FullName'] . "</td>";
@@ -105,7 +114,7 @@
 
 			<h1 class="text-center">Add New Member</h1>
 			<div class="container">
-				<form class="form-horizontal" action="?do=Insert" method="POST">
+				<form class="form-horizontal" action="?do=Insert" method="POST" enctype="multipart/form-data">
 					<!-- Start Username Field -->
 					<div class="form-group form-group-lg">
 						<label class="col-sm-2 control-label">Username</label>
@@ -139,6 +148,14 @@
 						</div>
 					</div>
 					<!-- End Full Name Field -->
+					<!-- Start Avatar Field -->
+					<div class="form-group form-group-lg">
+						<label class="col-sm-2 control-label">User Avatar</label>
+						<div class="col-sm-10 col-md-6">
+							<input type="file" name="avatar" class="form-control" required="required" />
+						</div>
+					</div>
+					<!-- End Avatar Field -->
 					<!-- Start Submit Field -->
 					<div class="form-group form-group-lg">
 						<div class="col-sm-offset-2 col-sm-10">
@@ -159,6 +176,21 @@
 
 				echo "<h1 class='text-center'>Insert Member</h1>";
 				echo "<div class='container'>";
+
+				// Upload Variables
+
+				$avatarName = $_FILES['avatar']['name'];
+				$avatarSize = $_FILES['avatar']['size'];
+				$avatarTmp	= $_FILES['avatar']['tmp_name'];
+				$avatarType = $_FILES['avatar']['type'];
+
+				// List Of Allowed File Typed To Upload
+
+				$avatarAllowedExtension = array("jpeg", "jpg", "png", "gif");
+
+				// Get Avatar Extension
+
+				$avatarExtension = strtolower(end(explode('.', $avatarName)));
 
 				// Get Variables From The Form
 
@@ -197,6 +229,18 @@
 					$formErrors[] = 'Email Cant Be <strong>Empty</strong>';
 				}
 
+				if (! empty($avatarName) && ! in_array($avatarExtension, $avatarAllowedExtension)) {
+					$formErrors[] = 'This Extension Is Not <strong>Allowed</strong>';
+				}
+
+				if (empty($avatarName)) {
+					$formErrors[] = 'Avatar Is <strong>Required</strong>';
+				}
+
+				if ($avatarSize > 4194304) {
+					$formErrors[] = 'Avatar Cant Be Larger Than <strong>4MB</strong>';
+				}
+
 				// Loop Into Errors Array And Echo It
 
 				foreach($formErrors as $error) {
@@ -206,6 +250,10 @@
 				// Check If There's No Error Proceed The Update Operation
 
 				if (empty($formErrors)) {
+
+					$avatar = rand(0, 10000000000) . '_' . $avatarName;
+
+					move_uploaded_file($avatarTmp, "uploads\avatars\\" . $avatar);
 
 					// Check If User Exist in Database
 
@@ -222,14 +270,15 @@
 						// Insert Userinfo In Database
 
 						$stmt = $con->prepare("INSERT INTO 
-													users(Username, Password, Email, FullName, RegStatus, Date)
-												VALUES(:zuser, :zpass, :zmail, :zname, 1, now()) ");
+													users(Username, Password, Email, FullName, RegStatus, Date, avatar)
+												VALUES(:zuser, :zpass, :zmail, :zname, 1, now(), :zavatar) ");
 						$stmt->execute(array(
 
-							'zuser' => $user,
-							'zpass' => $hashPass,
-							'zmail' => $email,
-							'zname' => $name
+							'zuser' 	=> $user,
+							'zpass' 	=> $hashPass,
+							'zmail' 	=> $email,
+							'zname' 	=> $name,
+							'zavatar'	=> $avatar
 
 						));
 
@@ -242,6 +291,7 @@
 					}
 
 				}
+
 
 			} else {
 

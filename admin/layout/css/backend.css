@@ -235,6 +235,11 @@ h1 {
 	right: -30px;
 }
 
+.manage-members img {
+	width: 50px;
+	height: 50px;
+}
+
 .main-table {
 	-webkit-box-shadow: 0 3px 10px #CCC;
 	-moz-box-shadow: 0 3px 10px #CCC;

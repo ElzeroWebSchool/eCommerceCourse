@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.11
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2016 at 05:09 AM
--- Server version: 5.6.21
--- PHP Version: 5.5.19
+-- Generation Time: Nov 03, 2017 at 05:33 PM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `shop`
@@ -26,8 +26,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `categories`
 --
 
-CREATE TABLE IF NOT EXISTS `categories` (
-`ID` int(11) NOT NULL,
+CREATE TABLE `categories` (
+  `ID` int(11) NOT NULL,
   `Name` varchar(255) NOT NULL,
   `Description` text NOT NULL,
   `parent` int(11) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `Visibility` tinyint(4) NOT NULL DEFAULT '0',
   `Allow_Comment` tinyint(4) NOT NULL DEFAULT '0',
   `Allow_Ads` tinyint(4) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `categories`
@@ -57,14 +57,14 @@ INSERT INTO `categories` (`ID`, `Name`, `Description`, `parent`, `Ordering`, `Vi
 -- Table structure for table `comments`
 --
 
-CREATE TABLE IF NOT EXISTS `comments` (
-`c_id` int(11) NOT NULL,
+CREATE TABLE `comments` (
+  `c_id` int(11) NOT NULL,
   `comment` text NOT NULL,
   `status` tinyint(4) NOT NULL,
   `comment_date` date NOT NULL,
   `item_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `comments`
@@ -86,8 +86,8 @@ INSERT INTO `comments` (`c_id`, `comment`, `status`, `comment_date`, `item_id`, 
 -- Table structure for table `items`
 --
 
-CREATE TABLE IF NOT EXISTS `items` (
-`Item_ID` int(11) NOT NULL,
+CREATE TABLE `items` (
+  `Item_ID` int(11) NOT NULL,
   `Name` varchar(255) NOT NULL,
   `Description` text NOT NULL,
   `Price` varchar(255) NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `items` (
   `Cat_ID` int(11) NOT NULL,
   `Member_ID` int(11) NOT NULL,
   `tags` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `items`
@@ -131,8 +131,8 @@ INSERT INTO `items` (`Item_ID`, `Name`, `Description`, `Price`, `Add_Date`, `Cou
 -- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-`UserID` int(11) NOT NULL COMMENT 'To Identify User',
+CREATE TABLE `users` (
+  `UserID` int(11) NOT NULL COMMENT 'To Identify User',
   `Username` varchar(255) NOT NULL COMMENT 'Username To Login',
   `Password` varchar(255) NOT NULL COMMENT 'Password To Login',
   `Email` varchar(255) NOT NULL,
@@ -140,21 +140,23 @@ CREATE TABLE IF NOT EXISTS `users` (
   `GroupID` int(11) NOT NULL DEFAULT '0' COMMENT 'Identify User Group',
   `TrustStatus` int(11) NOT NULL DEFAULT '0' COMMENT 'Seller Rank',
   `RegStatus` int(11) NOT NULL DEFAULT '0' COMMENT 'User Approval',
-  `Date` date NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+  `Date` date NOT NULL,
+  `avatar` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`UserID`, `Username`, `Password`, `Email`, `FullName`, `GroupID`, `TrustStatus`, `RegStatus`, `Date`) VALUES
-(1, 'Osama', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'o@elzero.info', 'Osama Mohamed', 1, 0, 1, '0000-00-00'),
-(24, 'Ahmed', '601f1889667efaebb33b8c12572835da3f027f78', 'ahmed@ahmed.com', 'Ahmed Sameh', 0, 0, 1, '2016-05-06'),
-(25, 'Gamal', '601f1889667efaebb33b8c12572835da3f027f78', 'Gamal@mmm.com', 'Gamal Ahmed', 0, 0, 1, '2016-05-06'),
-(26, 'Sameh', '601f1889667efaebb33b8c12572835da3f027f78', 's123@s.com', 'Sameh Ahmed', 0, 0, 1, '2016-05-08'),
-(27, 'Application', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'app@app.com', 'Application API', 0, 0, 1, '2016-05-11'),
-(28, 'Khalid', '601f1889667efaebb33b8c12572835da3f027f78', 'kh@kh.com', 'Khalid Ahmed', 0, 0, 1, '2016-05-04'),
-(30, 'Turki', '601f1889667efaebb33b8c12572835da3f027f78', 'Turki@turki.com', '', 0, 0, 0, '2016-06-16');
+INSERT INTO `users` (`UserID`, `Username`, `Password`, `Email`, `FullName`, `GroupID`, `TrustStatus`, `RegStatus`, `Date`, `avatar`) VALUES
+(1, 'Osama', 'a8bb4c0a594e6b7288a0d2d040831b27f5cedd0d', 'o@elzero.info', 'Osama Mohamed', 1, 0, 1, '0000-00-00', ''),
+(24, 'Ahmed', '601f1889667efaebb33b8c12572835da3f027f78', 'ahmed@ahmed.com', 'Ahmed Sameh', 0, 0, 1, '2016-05-06', ''),
+(25, 'Gamal', '601f1889667efaebb33b8c12572835da3f027f78', 'Gamal@mmm.com', 'Gamal Ahmed', 0, 0, 1, '2016-05-06', ''),
+(26, 'Sameh', '601f1889667efaebb33b8c12572835da3f027f78', 's123@s.com', 'Sameh Ahmed', 0, 0, 1, '2016-05-08', ''),
+(27, 'Application', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', 'app@app.com', 'Application API', 0, 0, 1, '2016-05-11', ''),
+(28, 'Khalid', '601f1889667efaebb33b8c12572835da3f027f78', 'kh@kh.com', 'Khalid Ahmed', 0, 0, 1, '2016-05-04', ''),
+(30, 'Turki', '601f1889667efaebb33b8c12572835da3f027f78', 'Turki@turki.com', '', 0, 0, 0, '2016-06-16', ''),
+(31, 'AboGamal', '00ea1da4192a2030f9ae023de3b3143ed647bbab', '123123@123123.com', 'Abo Gamal', 0, 0, 1, '2017-04-24', '568621957_wordpress-custom-user-avatar.png');
 
 --
 -- Indexes for dumped tables
@@ -164,25 +166,31 @@ INSERT INTO `users` (`UserID`, `Username`, `Password`, `Email`, `FullName`, `Gro
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
- ADD PRIMARY KEY (`ID`), ADD UNIQUE KEY `Name` (`Name`);
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `Name` (`Name`);
 
 --
 -- Indexes for table `comments`
 --
 ALTER TABLE `comments`
- ADD PRIMARY KEY (`c_id`), ADD KEY `items_comment` (`item_id`), ADD KEY `comment_user` (`user_id`);
+  ADD PRIMARY KEY (`c_id`),
+  ADD KEY `items_comment` (`item_id`),
+  ADD KEY `comment_user` (`user_id`);
 
 --
 -- Indexes for table `items`
 --
 ALTER TABLE `items`
- ADD PRIMARY KEY (`Item_ID`), ADD KEY `member_1` (`Member_ID`), ADD KEY `cat_1` (`Cat_ID`);
+  ADD PRIMARY KEY (`Item_ID`),
+  ADD KEY `member_1` (`Member_ID`),
+  ADD KEY `cat_1` (`Cat_ID`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
- ADD PRIMARY KEY (`UserID`), ADD UNIQUE KEY `Username` (`Username`);
+  ADD PRIMARY KEY (`UserID`),
+  ADD UNIQUE KEY `Username` (`Username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -192,22 +200,22 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=31;
+  MODIFY `Item_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'To Identify User',AUTO_INCREMENT=31;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'To Identify User', AUTO_INCREMENT=32;
 --
 -- Constraints for dumped tables
 --
@@ -216,15 +224,15 @@ MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT COMMENT 'To Identify User',AUTO_
 -- Constraints for table `comments`
 --
 ALTER TABLE `comments`
-ADD CONSTRAINT `comment_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `items_comment` FOREIGN KEY (`item_id`) REFERENCES `items` (`Item_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `comment_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `items_comment` FOREIGN KEY (`item_id`) REFERENCES `items` (`Item_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `items`
 --
 ALTER TABLE `items`
-ADD CONSTRAINT `cat_1` FOREIGN KEY (`Cat_ID`) REFERENCES `categories` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `member_1` FOREIGN KEY (`Member_ID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `cat_1` FOREIGN KEY (`Cat_ID`) REFERENCES `categories` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `member_1` FOREIGN KEY (`Member_ID`) REFERENCES `users` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
